@@ -1,0 +1,321 @@
+openapi: 3.0.3
+info:
+  title: Task Service
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: DEV environment
+tags:
+  - name: TaskBasic
+    description: Basic CRUD operations on Task
+  - name: TaskOperation
+    description: Operations on task like scheduling and generating reports what has been done
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        name: 
+          type: string
+        description:
+          type: string
+        priority:
+          type: string
+          enum:
+            - P1
+            - P2
+            - P3
+            - P4
+        dueDate:
+          type: string
+          format: date
+        scheduled:
+          type: string
+          format: date
+        done:
+          type: boolean
+      required: 
+        - name
+        - priority
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+          enum:
+            - TASK_NOT_FOUND
+            - TASK_SAVE_ERROR
+      required: 
+        - message
+        - code
+  examples:
+    SimpleTask:
+      value:
+        name: do something
+        description: do something today
+        priority: P3
+        dueDate: 11.11.2023
+        scheduled: 12.12.2022
+        done: false
+    MinimalTask:
+      value:
+        name: do anything
+        priority: P1
+    NotFoundError:
+      value:
+        message: Task not found
+        code: TASK_NOT_FOUND
+    SaveError:
+      value:
+        message: Task cannot be saved
+        code: TASK_SAVE_ERROR
+  parameters:
+    query-param-task-name:
+      name: name
+      description: Name of the task
+      in: query
+      schema:
+        type: string
+    query-param-task-description:
+      name: description
+      description: Description of the task
+      in: query
+      schema:
+        type: string
+    path-param-task-id:
+      name: id
+      description: ID of task
+      in: path
+      required: true
+      schema:
+        type: string
+paths:
+  /tasks:
+    post:
+      operationId: createNewTask
+      tags:
+        - TaskBasic
+      summary: Creates new Task
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Task'
+            examples:
+                SimpleTask:
+                  $ref: '#/components/examples/SimpleTask'
+                MinimalTask:
+                  $ref: '#/components/examples/MinimalTask'
+      responses:
+        '201':
+          description: Task was created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Task'
+              examples:
+                SimpleTask:
+                  $ref: '#/components/examples/SimpleTask'
+                MinimalTask:
+                  $ref: '#/components/examples/MinimalTask'
+        '400':
+          description: There was problem with request
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                SaveError:
+                  $ref: '#/components/examples/SaveError'
+    get:
+      operationId: getAllTasks
+      parameters:
+        - $ref: '#/components/parameters/query-param-task-name'
+        - $ref: '#/components/parameters/query-param-task-description'
+      summary: Searches all tags and returns an Array
+      tags:
+        - TaskBasic
+      responses:
+        '200':
+          description: Returns all tasks
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+  /tasks/{id}:
+    put:
+      operationId: updateTask
+      summary: Updates task of given ID
+      tags:
+        - TaskBasic
+      parameters:
+        - $ref: '#/components/parameters/path-param-task-id'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Task'
+            examples:
+                SimpleTask:
+                  $ref: '#/components/examples/SimpleTask'
+                MinimalTask:
+                  $ref: '#/components/examples/MinimalTask'
+      responses:
+        '200':
+          description: Task has been updated
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Task'
+              examples:
+                SimpleTask:
+                  $ref: '#/components/examples/SimpleTask'
+                MinimalTask:
+                  $ref: '#/components/examples/MinimalTask'
+        '400':
+          description: Updating a task failed
+          content:
+            'applicaation/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                SaveError:
+                  $ref: '#/components/examples/SaveError'
+        '404':
+          description: Task not found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFoundError:
+                  $ref: '#/components/examples/NotFoundError'
+    get:
+      operationId: getOneTask
+      tags:
+        - TaskBasic
+      summary: Returns task with given ID
+      parameters:
+        - $ref: '#/components/parameters/path-param-task-id'
+      responses:
+        '200':
+          description: Task with given ID returned
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Task'
+              examples:
+                SimpleTask:
+                  $ref: '#/components/examples/SimpleTask'
+                MinimalTask:
+                  $ref: '#/components/examples/MinimalTask'
+        '404':
+          description: Task with given ID not found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFoundError:
+                  $ref: '#/components/examples/NotFoundError'
+    delete:
+      operationId: deleteTask
+      summary: Deletes given task
+      tags:
+        - TaskBasic
+      parameters:
+        - $ref: '#/components/parameters/path-param-task-id'
+      responses:
+        '200':
+          description: Task has been deleted
+        '404':
+          description: Task not found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFoundError:
+                  $ref: '#/components/examples/NotFoundError'
+    patch:
+      operationId: switchDone
+      summary: Sets done to opposite value
+      tags:
+        - TaskOperation
+      parameters:
+        - $ref: '#/components/parameters/path-param-task-id'
+      responses:
+        '200':
+          description: Task done field switched to opposite
+          content:
+            'application/json':
+              schema:
+               $ref: '#/components/schemas/Task'
+              examples:
+                SimpleTask:
+                  $ref: '#/components/examples/SimpleTask'
+        '404':
+          description: Task with given ID not found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFoundError:
+                  $ref: '#/components/examples/NotFoundError'
+    post:
+      operationId: scheduleTask
+      summary: schedules task with given ID on date indicated in scheduled field
+      tags:
+        - TaskOperation
+      parameters:
+        - $ref: '#/components/parameters/path-param-task-id'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Task'
+            examples:
+                SimpleTask:
+                  $ref: '#/components/examples/SimpleTask'
+      responses:
+        '200':
+          description: Task has been scheduled
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Task'
+              examples:
+                SimpleTask:
+                  $ref: '#/components/examples/SimpleTask'
+        '400':
+          description: Scheduling a task failed
+          content:
+            'applicaation/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                SaveError:
+                  $ref: '#/components/examples/SaveError'
+        '404':
+          description: Task not found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                NotFoundError:
+                  $ref: '#/components/examples/NotFoundError'
+        
+            
+                
+                
+                
+                
+                
+                
+                

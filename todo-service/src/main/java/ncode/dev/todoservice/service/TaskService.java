@@ -29,6 +29,43 @@ public class TaskService {
         log.info("Deleting task with id: {}", id);
     }
 
+    public List<TaskDTO> getAllTasks() {
+        log.info("Returning all tasks");
+        var tasks = Arrays.asList(
+                new TaskDTO()
+                        .name("Task 1")
+                        .description("Task 1 description")
+                        .dueDate(LocalDate.of(2024, 12, 12))
+                        .priority(TaskDTO.PriorityEnum.P3)
+                        .done(false),
+                new TaskDTO()
+                        .name("Task 2")
+                        .description("Task 2 description")
+                        .dueDate(LocalDate.of(2022, 10, 01))
+                        .priority(TaskDTO.PriorityEnum.P2)
+                        .done(false),
+                new TaskDTO()
+                        .name("Task 3")
+                        .description("Task 3 description")
+                        .dueDate(LocalDate.of(2022, 12, 11))
+                        .priority(TaskDTO.PriorityEnum.P4)
+                        .done(false),
+                new TaskDTO()
+                        .name("Task 4")
+                        .description("Task 4 description")
+                        .dueDate(LocalDate.of(2023, 01, 01))
+                        .priority(TaskDTO.PriorityEnum.P2)
+                        .done(false),
+                new TaskDTO()
+                        .name("Task 5")
+                        .description("Task 5 description")
+                        .dueDate(LocalDate.of(2023, 03, 02))
+                        .priority(TaskDTO.PriorityEnum.P1)
+                        .done(false)
+        );
+        return tasks;
+    }
+
     public List<TaskDTO> getAllTasks(final String name, final String description) {
         log.info("Returning all tasks");
         var tasks = Arrays.asList(

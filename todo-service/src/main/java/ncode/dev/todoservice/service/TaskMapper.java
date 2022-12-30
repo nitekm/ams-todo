@@ -7,13 +7,15 @@ import org.springframework.stereotype.Component;
 import ncode.dev.todoservice.openapi.task.model.TaskDTO;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 
 @Component
 public class TaskMapper {
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy HH:mm");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public TaskDTO mapTotaskDTO (Task task) {
         var taskDTO = new TaskDTO();
@@ -30,11 +32,14 @@ public class TaskMapper {
 
     public Task mapToTask(TaskDTO taskDTO) {
 
+        var dueDate = Optional.of(taskDTO.getDueDate()).orElse(LocalDate.of(2030, 12, 31));
+        var scheduled = Optional.ofNullable(taskDTO.getScheduled()).orElse(LocalDate.now());
+
         return Task.newBuilder()
                 .setName(taskDTO.getName())
                 .setDescription(taskDTO.getDescription())
-                .setDueDate(taskDTO.getDueDate().format(formatter))
-                .setScheduled(taskDTO.getScheduled().format(formatter))
+                .setDueDate(dueDate.format(formatter))
+                .setScheduled(scheduled.format(formatter))
                 .setPriority(mapToPriority(taskDTO.getPriority()))
                 .setDone(taskDTO.isDone())
                 .build();

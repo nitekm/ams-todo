@@ -9,3 +9,12 @@ eureka:
       default-zone: ${EUREKA_URI:http://localhost:8762/eureka}
   instance:
     prefer-ip-address: true
+
+grpc:
+  client:
+    basicTask:
+      address: static://localhost:9090
+      negotiationType: plaintext
+  server:
+    port: 9091
+

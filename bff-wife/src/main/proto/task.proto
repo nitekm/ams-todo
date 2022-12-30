@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package ncode.dev.todoservice.grpc;
+
+option java_multiple_files = true;
+option java_package = "ncode.dev.bffwife.grpc";
+option java_outer_classname = "TaskProto";
+
+service BasicTaskService {
+  rpc CreateTask (Task) returns (Task) {}
+  rpc DeleteTask (TaskId) returns (Empty) {}
+  rpc GetAllTasks (Empty) returns (stream Task) {}
+  rpc GetOneTask (TaskId) returns (Task) {}
+  rpc UpdateTask (UpdateTaskRequest) returns (Task) {}
+}
+
+message Empty {}
+
+message TaskId {
+  string id = 1;
+}
+
+message UpdateTaskRequest {
+  string id = 1;
+  Task task = 2;
+}
+
+message Task {
+  string name = 1;
+  string description = 2;
+  Priority priority = 3;
+  string dueDate = 4;
+  string scheduled = 5;
+  bool done = 6;
+}
+
+message Error {
+  enum Code {
+    NOT_FOUND = 0;
+    SAVE_ERROR = 1;
+  }
+  string message = 1;
+  Code code = 2;
+}
+
+enum Priority {
+  P1 = 0;
+  P2 = 1;
+  P3 = 2;
+  P4 = 3;
+}

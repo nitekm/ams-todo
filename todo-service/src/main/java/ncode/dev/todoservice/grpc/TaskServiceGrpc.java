@@ -11,11 +11,13 @@ import ncode.dev.todoservice.grpc.TaskId;
 import ncode.dev.todoservice.grpc.UpdateTaskRequest;
 import ncode.dev.todoservice.openapi.task.model.TaskDTO;
 import ncode.dev.todoservice.grpc.Empty;
+import net.devh.boot.grpc.server.service.GrpcService;
 
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
+@GrpcService
 public class TaskServiceGrpc extends BasicTaskServiceImplBase {
 
     private final TaskService taskService;
@@ -43,7 +45,6 @@ public class TaskServiceGrpc extends BasicTaskServiceImplBase {
 
     @Override
     public void getAllTasks(final Empty request, final StreamObserver<Task> responseObserver) {
-        log.info("Returning all Tasks");
         List<TaskDTO> taskDTOs = taskService.getAllTasks();
 
         taskDTOs.forEach(taskDTO -> responseObserver.onNext(taskMapper.mapToTask(taskDTO)));
@@ -52,11 +53,20 @@ public class TaskServiceGrpc extends BasicTaskServiceImplBase {
 
     @Override
     public void getOneTask(final TaskId request, final StreamObserver<Task> responseObserver) {
-        //TODO: implement
+        log.info("Returning task{}", request.getId());
+        TaskDTO taskDTO = taskService.getOneTask(request.getId());
+        responseObserver.onNext(taskMapper.mapToTask(taskDTO));
+        responseObserver.onCompleted();
     }
 
     @Override
     public void updateTask(final UpdateTaskRequest request, final StreamObserver<Task> responseObserver) {
-        //TODO: implement
+        log.info("Updating task id: {} with data {}", request.getId(), request.getTask());
+        TaskDTO update = taskMapper.mapTotaskDTO(request.getTask());
+        TaskDTO taskDTO = taskService.updateTask(request.getId(), update);
+
+        log.info("Updated task {}", taskDTO);
+        responseObserver.onNext(taskMapper.mapToTask(taskDTO));
+        responseObserver.onCompleted();
     }
 }

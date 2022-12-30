@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class WifeController {
+@RequestMapping("/rest")
+public class WifeRestController {
     private final TaskBasicClient basicClient;
     private final TaskOperationClient operationClient;
 
-    public WifeController(final TaskBasicClient basicClient, final TaskOperationClient operationClient) {
+    public WifeRestController(final TaskBasicClient basicClient, final TaskOperationClient operationClient) {
         this.basicClient = basicClient;
         this.operationClient = operationClient;
     }

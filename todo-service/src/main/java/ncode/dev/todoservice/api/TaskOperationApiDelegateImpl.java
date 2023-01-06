@@ -5,6 +5,7 @@ import ncode.dev.todoservice.service.TaskService;
 import ncode.dev.todoservice.openapi.task.model.TaskDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import ncode.dev.todoservice.openapi.task.model.ScheduleRequestDTO;
 
 @Component
 @RequiredArgsConstructor
@@ -12,8 +13,8 @@ public class TaskOperationApiDelegateImpl implements ncode.dev.todoservice.opena
     private final TaskService taskService;
 
     @Override
-    public ResponseEntity<TaskDTO> scheduleTask(final String id, final TaskDTO body) {
-        return ResponseEntity.ok(taskService.scheduleTask(id, body));
+    public ResponseEntity<TaskDTO> scheduleTask(final ScheduleRequestDTO scheduleRequestDTO) {
+        return ResponseEntity.ok(taskService.scheduleTask(scheduleRequestDTO));
     }
 
     @Override

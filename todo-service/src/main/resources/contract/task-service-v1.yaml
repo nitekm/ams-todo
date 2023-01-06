@@ -37,6 +37,17 @@ components:
       required: 
         - name
         - priority
+    ScheduleRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        scheduleDate:
+          type: string
+          format: date
+      required:
+        - id
+        - scheduleDate
     Error:
       type: object
       properties:
@@ -63,6 +74,10 @@ components:
       value:
         name: do anything
         priority: P1
+    SimpleScheduleRequest:
+      value:
+        id: 101
+        scheduleDate: 01.01.2024
     NotFoundError:
       value:
         message: Task not found
@@ -267,24 +282,23 @@ paths:
               examples:
                 NotFoundError:
                   $ref: '#/components/examples/NotFoundError'
+  /schedule:
     post:
       operationId: scheduleTask
-      summary: schedules task with given ID on date indicated in scheduled field
+      summary: Schedules task of given ID on given date
       tags:
         - TaskOperation
-      parameters:
-        - $ref: '#/components/parameters/path-param-task-id'
       requestBody:
         content:
           'application/json':
             schema:
-              $ref: '#/components/schemas/Task'
+              $ref: '#/components/schemas/ScheduleRequest'
             examples:
-                SimpleTask:
-                  $ref: '#/components/examples/SimpleTask'
+              SimpleScheduleRequest:
+                $ref: '#/components/examples/SimpleScheduleRequest'
       responses:
         '200':
-          description: Task has been scheduled
+          description: Task has been sent to schedule
           content:
             'application/json':
               schema:
@@ -292,15 +306,8 @@ paths:
               examples:
                 SimpleTask:
                   $ref: '#/components/examples/SimpleTask'
-        '400':
-          description: Scheduling a task failed
-          content:
-            'applicaation/json':
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                SaveError:
-                  $ref: '#/components/examples/SaveError'
+                MinimalTask:
+                  $ref: '#/components/examples/MinimalTask'
         '404':
           description: Task not found
           content:
@@ -310,12 +317,3 @@ paths:
               examples:
                 NotFoundError:
                   $ref: '#/components/examples/NotFoundError'
-        
-            
-                
-                
-                
-                
-                
-                
-                

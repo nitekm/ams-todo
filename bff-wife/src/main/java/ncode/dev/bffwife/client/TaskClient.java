@@ -1,5 +1,6 @@
 package ncode.dev.bffwife.client;
 
+import ncode.dev.bffwife.model.ScheduleRequestDTO;
 import ncode.dev.bffwife.model.TaskDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -7,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(value = "todo-service")
-public interface TaskBasicClient {
+public interface TaskClient {
 
     @GetMapping(value = "/tasks")
     List<TaskDTO> getAllTasks();
@@ -23,4 +24,10 @@ public interface TaskBasicClient {
 
     @DeleteMapping(value = "/tasks/{id}")
     Void deleteTask(@PathVariable("id") String id);
+
+    @PostMapping(value = "/schedule")
+    TaskDTO scheduleTask(@RequestBody ScheduleRequestDTO scheduleRequestDTO);
+
+    @PatchMapping(value = "/tasks/{id}")
+    TaskDTO switchDone(@PathVariable("id") String id);
 }

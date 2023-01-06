@@ -1,6 +1,20 @@
 spring:
   application:
     name: todo-service
+  cloud:
+    stream:
+      bindings:
+        task-schedule-out-0:
+          binder: rabbit
+          destination: task-schedule.exchange
+          group: task-schedule
+      binders:
+        rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: localhost
 server:
   port: 0
 eureka:
@@ -12,3 +26,5 @@ eureka:
 grpc:
   server:
     port: 9090
+
+

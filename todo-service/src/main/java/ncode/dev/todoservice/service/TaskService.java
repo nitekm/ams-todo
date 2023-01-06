@@ -1,8 +1,10 @@
 package ncode.dev.todoservice.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ncode.dev.todoservice.exception.TaskNotFoundException;
 import ncode.dev.todoservice.openapi.task.model.TaskDTO;
+import ncode.dev.todoservice.operations.TaskScheduleService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -11,7 +13,10 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TaskService {
+
+    private final TaskScheduleService taskScheduleService;
 
     private static final String ERROR_ID = "101";
 
@@ -121,9 +126,10 @@ public class TaskService {
         return body;
     }
 
-    public TaskDTO scheduleTask(final String id, final TaskDTO body) {
-        return null;
+    public TaskDTO scheduleTask(final ncode.dev.todoservice.openapi.task.model.ScheduleRequestDTO scheduleRequestDTO) {
+        return taskScheduleService.scheduleTask(scheduleRequestDTO);
     }
+
 
     public TaskDTO switchDone(final String id) {
         if (id.equals(ERROR_ID)) {

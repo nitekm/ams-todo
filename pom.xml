@@ -24,6 +24,7 @@
         <module>eureka</module>
         <module>bff-wife</module>
         <module>todo-service</module>
+        <module>task-scheduler</module>
     </modules>
 
     <dependencies>
@@ -54,6 +55,10 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
         </dependency>
     </dependencies>
 
